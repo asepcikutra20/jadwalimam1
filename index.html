@@ -187,8 +187,8 @@ function jalanTV() {
         let waktuTarget = new Date();
         waktuTarget.setHours(parseInt(ja), parseInt(me), 0, 0);
         
-        let waktuMulaiTampil = new Date(waktuTarget.getTime() - 15 * 60000);
-        let waktuSelesai = new Date(waktuTarget.getTime() + 30 * 60000);
+        let waktuMulaiTampil = new Date(waktuTarget.getTime() - 7 * 60000);
+        let waktuSelesai = new Date(waktuTarget.getTime() + 15 * 60000);
         
         if (now >= waktuMulaiTampil && now < waktuSelesai) {
             let cls = (now >= waktuMulaiTampil && now < waktuTarget) ? "soon" : "";
