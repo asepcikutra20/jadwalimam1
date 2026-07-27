@@ -1,214 +1,276 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Sistem TV Masjid</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: 'Arial Black', Arial, sans-serif; text-align: center; padding: 20px; overflow: hidden; }
-        
-        /* LAYOUT TV */
-        #layar-tv { display: block; }
-        h1 { font-size: 85px; color: #00ff88; margin-bottom: 10px; text-shadow: 0 0 15px #00ff88; }
-        .tgl { font-size: 38px; color: #ccc; margin-bottom: 25px; }
-        .box { background: #111; padding: 30px; margin: 20px auto; border-radius: 20px; border-left: 10px solid #00ff88; max-width: 1100px; transition: all 0.5s ease; text-align: center; }
-        .box h2 { font-size: 50px; margin-bottom: 10px; }
-        .box h3 { font-size: 70px; color: #00ff88; margin-bottom: 12px; }
-        .box p { font-size: 32px; margin: 5px; }
-        
-        /* TAMPILAN JADWAL MENDEKATI WAKTU (TANPA KEDIP) */
-        .soon { background: #00ff88; color: #000; box-shadow: 0 0 40px #00ff88; }
-        .soon * { color: #000 !important; text-shadow: none !important; }
-        
-        .kosong { font-size: 50px; margin-top: 150px; color: #444; font-weight: bold; }
-        
-        /* TOMBOL KONTROL BAWAH */
-        .btn-bawah { position: fixed; bottom: 10px; background: rgba(255,255,255,0.05); color: #333; border: 0; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; font-family: Arial; transition: all 0.3s; }
-        .btn-bawah:hover { color: #fff; background: #222; }
-        .btn-admin { right: 10px; }
+<head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>JADWAL MASJID AL MUSLIM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden;height:100vh;display:flex;flex-direction:column}
 
-        /* LAYOUT INPUT JADWAL (ADMIN) */
-        #layar-input { display: none; background: #111; color: #fff; font-family: Arial; padding: 15px; max-width: 700px; margin: auto; text-align: left; overflow-y: auto; height: 100vh; }
-        #layar-input h1 { font-size: 32px; margin-bottom: 20px; text-shadow: none; text-align: center; }
-        input, select, .btn-aksi { width: 100%; padding: 14px; margin: 6px 0; border: 0; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
-        input, select { background: #222; color: #fff; }
-        .btn-aksi { background: #00ff88; color: #000; font-weight: bold; cursor: pointer; }
-        .jadwal-item { background: #000; padding: 12px; margin: 8px 0; border-left: 4px solid #00ff88; display: flex; justify-content: space-between; align-items: center; }
-        .info { flex-grow: 1; }
-        .info strong { font-size: 18px; color: #00ff88; }
-        .info small { font-size: 14px; color: #ccc; }
-        
-        /* GAYA TOMBOL EDIT DAN AREA AKSI */
-        .grup-tombol { display: flex; gap: 8px; }
-        .btn-del { background: red; color: white; padding: 8px 12px; width: auto; font-size: 14px; margin: 0; border-radius: 5px; border: 0; cursor: pointer; }
-        .btn-edit { background: #00aeff; color: white; padding: 8px 12px; width: auto; font-size: 14px; margin: 0; border-radius: 5px; border: 0; cursor: pointer; }
+.header{background:#000;padding:15px;text-align:center;border-bottom:none;position:relative;z-index:10} 
+h1{font-size:clamp(24px, 4vw, 50px);color:#00ff88;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tgl{font-size:26px;color:#ccc;text-align:center;margin:10px 0}
 
-        /* OTOMATIS MENYESUAIKAN UKURAN LAYAR HP */
-        @media (max-width: 768px) {
-            body { overflow-y: auto; padding: 10px; }
-            h1 { font-size: 32px; }
-            .tgl { font-size: 18px; margin-bottom: 15px; }
-            .box { padding: 15px; margin: 10px auto; border-left-width: 6px; }
-            .box h2 { font-size: 24px; }
-            .box h3 { font-size: 28px; }
-            .box p { font-size: 16px; }
-            .kosong { font-size: 22px; margin-top: 50px; }
-        }
-    </style>
-</head>
+/* HALAMAN TV MEMENUHI LAYAR DAN CENTERKAN ISI */
+#tvPage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* FLEXBOX UNTUK MEMASTIKAN BOX SELALU DI TENGAH LAYAR TV */
+.grid{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  gap: 30px;
+  max-width: 1400px;
+  margin: auto;
+  padding: 20px;
+  width: 100%;
+  flex-grow: 1;
+  position: relative;
+  z-index: 5;
+}
+
+/* BOX DENGAN LATAR BELAKANG OPASITI RENDAH & TANPA BORDER */
+.box{
+  background: rgba(255, 255, 255, 0.05); 
+  padding: 40px 50px;
+  border-radius: 20px;
+  border: none;
+  text-align: center;
+  width: 100%;
+  max-width: 750px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px); 
+}
+
+/* UKURAN TEKS UTAMA (NAMA KEGIATAN/SHOLAT) */
+.box h2{font-size:46px; margin-bottom:25px; text-transform: uppercase; letter-spacing: 2px;}
+/* UKURAN TEKS INFO IMAM & BADAL */
+.box p{font-size:30px; margin:10px 0; line-height: 1.4} 
+.imam-info{width: 100%;}
+
+/* INDIKATOR STATUS PERUBAHAN WARNA TEKS JADWAL */
+.soon h2 { color: #00ff88 !important; }
+.soon p { color: #ffffff !important; }
+
+.aktif h2 { color: #ffff00 !important; text-shadow: 0 0 10px rgba(255,255,0,0.5); }
+.aktif p { color: #ffffff !important; }
+
+.past{opacity:0.15; filter:grayscale(1)}
+.footer{position:fixed;bottom:0;width:100%;left:0;background:#000;padding:8px;font-size:16px;text-align:center;border-top:1px solid #222;z-index: 10}
+
+.standby{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:clamp(30px, 7vw, 85px); 
+  font-weight:bold;color:#00ff88;opacity:0.08;
+  letter-spacing:4px;text-align:center;z-index:1;width:90%;line-height:1.2
+}
+
+.btnAdmin{position:fixed;bottom:60px;right:15px;background:#00ff88;color:#000;border:none;padding:10px 20px;border-radius:10px;font-weight:bold;cursor:pointer;z-index:999}
+
+#adminPage{display:none;background:#0a0a0a;height:100vh;overflow-y:auto;padding:15px;padding-bottom:80px}
+#adminPage input,#adminPage select,#adminPage button{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:none;font-size:16px}
+#adminPage input,#adminPage select{background:#222;color:#fff} 
+#adminPage button{background:#00ff88;color:#000;font-weight:bold;cursor:pointer}
+#adminPage button.del{background:red;color:#fff}
+
+/* GAYA TOMBOL EDIT DI HALAMAN ADMIN */
+#adminPage button.edit{background:#00aaff;color:#fff;margin-right:8px}
+.item{background:#111;padding:15px;margin:10px 0;border-radius:10px;border-left:4px solid #00ff88;text-align:left}
+.item-buttons{display:flex;margin-top:10px}
+.item-buttons button{width:auto !important;padding:8px 20px !important;margin:0 !important}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+@media (max-width: 900px){
+  .box h2{font-size:32px}
+  .box p{font-size:22px}
+  .standby{letter-spacing:2px}
+  .btnAdmin{bottom:70px;right:10px;padding:8px 15px}
+}
+</style></head>
 <body>
 
-    <!-- CONTAINER 1: TAMPILAN TV MASJID -->
-    <div id="layar-tv">
-        <h1>MASJID AL MUSLIM</h1>
-        <div class="tgl" id="tgl"></div>
-        <div id="isi-tv"></div>
-        
-        <!-- Tombol Kontrol -->
-        <button class="btn-bawah btn-admin" onclick="bukaAdmin()">⚙️</button>
-    </div>
+<button class="btnAdmin" id="btnAdmin" onclick="bukaAdmin()">⚙️</button>
 
-    <!-- CONTAINER 2: HALAMAN INPUT JADWAL -->
-    <div id="layar-input">
-        <h1>EDIT JADWAL MASJID</h1>
-        <select id="h">
-            <option value="1">Senin</option><option value="2">Selasa</option><option value="3">Rabu</option>
-            <option value="4">Kamis</option><option value="5">Jum'at</option><option value="6">Sabtu</option><option value="7">Ahad</option>
-        </select>
-        <input id="j" type="time">
-        <input id="k" placeholder="Kegiatan">
-        <input id="i" placeholder="Imam">
-        <input id="b1" placeholder="Badal 1">
-        <input id="b2" placeholder="Badal 2">
-        
-        <button class="btn-aksi" onclick="simpan()">SIMPAN JADWAL</button>
-        <button class="btn-aksi" onclick="hapusSemua()" style="background:red; color:#fff;">HAPUS SEMUA DATA</button>
-        <button class="btn-aksi" onclick="tutupAdmin()" style="background:#555; color:#fff; margin-top: 15px;">⬅️ KEMBALI KE TV</button>
-        <hr style="margin: 20px 0; border-color: #333;">
-        <div id="daftar-jadwal-input"></div>
-    </div>
+<div id="tvPage">
+  <div class="header"><h1>MASJID AL MUSLIM</h1></div>
+  <div class="tgl" id="tgl"></div>
+
+  <div class="standby" id="standbyText">TULUSKAN NIAT, TEGAKKAN SHOLAT</div>
+
+  <div class="grid" id="isi"></div>
+  <div class="footer"></div>
+</div>
+
+<div id="adminPage">
+  <button class="btnAdmin" style="background:red;bottom:15px" onclick="tutupAdmin()">❌ TUTUP</button>
+  <h2 style="color:#00ff88;text-align:center">📝 EDIT JADWAL MASJID</h2>
+  <div>
+    <select id="h"><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option><option>Minggu</option></select>
+    <input id="j" type="time">
+    <input id="k" placeholder="Nama Kegiatan : Sholat Dzuhur / Kajian">
+    <input id="i" placeholder="Nama Imam">
+    <div class="grid2"><input id="b1" placeholder="Badal 1"><input id="b2" placeholder="Badal 2"></div>
+    <button id="btnSimpan" onclick="simpan()">+ TAMBAH JADWAL</button>
+  </div>
+  <h3 style="margin-top:20px">DAFTAR JADWAL</h3>
+  <div id="list"></div>
+  <button onclick="clearAll()" style="background:orange">🗑 HAPUS SEMUA JADWAL</button>
+</div>
 
 <script>
-const namaHari = ["", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu", "Ahad"];
+let data=JSON.parse(localStorage.jadwal||"[]");
+let editId = null; // Menggunakan ID unik/Timestamp agar tidak terpengaruh urutan sort data saat edit
 
-// NAVIGASI HALAMAN
-function bukaAdmin() {
-    document.getElementById("layar-tv").style.display = "none";
-    document.getElementById("layar-input").style.display = "block";
-    tampilInputan();
-}
-function tutupAdmin() {
-    document.getElementById("layar-input").style.display = "none";
-    document.getElementById("layar-tv").style.display = "block";
-    jalanTV();
-}
+function bukaAdmin(){document.getElementById('tvPage').style.display='none';document.getElementById('adminPage').style.display='block';document.getElementById('btnAdmin').style.display='none';tampil()}
+function tutupAdmin(){document.getElementById('tvPage').style.display='flex';document.getElementById('adminPage').style.display='none';document.getElementById('btnAdmin').style.display='block';batalEdit();jalan()}
 
-// LOGIKA HALAMAN INPUT (ASLI BAWAN ANDA - 100% AMAN & NORMAL)
-function simpan() {
-    if (!j.value || !k.value) { alert("Waktu dan Kegiatan harus diisi!"); return; }
-    let x = JSON.parse(localStorage.jadwal || "[]");
-    x.push({ h: parseInt(h.value), j: j.value, k: k.value, i: i.value || "-", b1: b1.value || "-", b2: b2.value || "-" });
-    x.sort((a, b) => a.h - b.h || a.j.localeCompare(b.j));
-    localStorage.jadwal = JSON.stringify(x);
-    alert("Tersimpan");
-    k.value = ""; i.value = ""; b1.value = ""; b2.value = "";
-    tampilInputan();
-}
+function jalan(){
+let hr=new Date().toLocaleDateString('id-ID',{weekday:'long'});
+let tgl=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+let jam = new Date().toLocaleTimeString('id-ID');
+document.getElementById("tgl").innerText=hr+", "+tgl+" | "+jam;
+let html="";let now=new Date();
+let hariIni=data.filter(d=>d.h==hr);
+let adaJadwalMuncul = false;
 
-// METODE SIMPLE & PASTI BERHASIL: Naikkan data lama lalu panggil fungsi hapus bawaan Anda
-function panggilDataEdit(index) {
-    let x = JSON.parse(localStorage.jadwal || "[]");
-    let target = x[index];
-    
-    // 1. Naikkan teks data lama ke kotak input atas
-    document.getElementById("h").value = target.h;
-    document.getElementById("j").value = target.j;
-    document.getElementById("k").value = target.k;
-    document.getElementById("i").value = target.i === "-" ? "" : target.i;
-    document.getElementById("b1").value = target.b1 === "-" ? "" : target.b1;
-    document.getElementById("b2").value = target.b2 === "-" ? "" : target.b2;
-    
-    // 2. Langsung hapus data lama tersebut dari daftar bawah
-    x.splice(index, 1);
-    localStorage.jadwal = JSON.stringify(x);
-    tampilInputan();
-    
-    // 3. Geser layar ke atas agar form input langsung kelihatan di HP
-    document.getElementById("layar-input").scrollTop = 0;
-}
+if(hariIni.length>0){
+  hariIni.forEach(d=>{
+    let [ja,me]=d.j.split(":");let adzan=new Date();adzan.setHours(ja,me,0,0);
+    let mulai=new Date(adzan.getTime() - 7*60000);
+    let selesai=new Date(adzan.getTime() + 10*60000);
+    let cls="";let showImam = false;
 
-// MENAMPILKAN DATA DI HALAMAN INPUT
-function tampilInputan() {
-    let x = JSON.parse(localStorage.jadwal || "[]");
-    document.getElementById("daftar-jadwal-input").innerHTML = x.map((v, index) => `
-        <div class="jadwal-item">
-            <div class="info">
-                <strong>[${namaHari[v.h]} - ${v.j}]</strong> ${v.k}<br>
-                <small>Imam: ${v.i} | Badal: ${v.b1} / ${v.b2}</small>
-            </div>
-            <div class="grup-tombol">
-                <button class="btn-edit" onclick="panggilDataEdit(${index})">📝</button>
-                <button class="btn-del" onclick="del(${index})">X</button>
-            </div>
-        </div>
-    `).join("") || "<p style='color:#666;text-align:center;'>Belum ada jadwal disimpan.</p>";
-}
+    if(now >= mulai && now < adzan){cls="soon"; showImam = true;}
+    if(now >= adzan && now < selesai){cls="aktif"; showImam = true;}
+    if(now >= selesai)cls="past";
 
-function del(index) {
-    if (confirm("Hapus jadwal ini?")) {
-        let x = JSON.parse(localStorage.jadwal || "[]");
-        x.splice(index, 1);
-        localStorage.jadwal = JSON.stringify(x);
-        tampilInputan();
+    if(showImam){
+      adaJadwalMuncul = true;
+      
+      let teksImam = d.i ? `<p><b>Imam:</b> ${d.i}</p>` : '';
+      let teksB1 = d.b1 ? `<p><b>Badal 1:</b> ${d.b1}</p>` : '';
+      let teksB2 = d.b2 ? `<p><b>Badal 2:</b> ${d.b2}</p>` : '';
+
+      html+=`<div class="box ${cls}">
+              <h2>${d.k}</h2>
+              <div class="imam-info">
+                ${teksImam}
+                ${teksB1}
+                ${teksB2}
+              </div>
+            </div>`;
     }
+  })
 }
 
-function hapusSemua() {
-    if (confirm("Hapus seluruh data jadwal?")) { localStorage.removeItem("jadwal"); tampilInputan(); }
+if(adaJadwalMuncul){
+  document.getElementById("standbyText").style.display = "none";
+} else {
+  document.getElementById("standbyText").style.display = "block";
 }
 
-// LOGIKA HALAMAN TAYANG TV (ASLI JALAN 100%)
-function jalanTV() {
-    let now = new Date();
-    let jsDay = now.getDay();
-    let angkaHariIni = (jsDay === 0) ? 7 : jsDay;
+document.getElementById("isi").innerHTML=html}
+
+function tampil(){
+  let html="";
+  if(data.length==0){
+    html="<p style='text-align:center;color:#666'>Belum ada jadwal</p>";
+  }
+  
+  // Amankan pengurutan jadwal
+  data.sort((a,b)=>a.h.localeCompare(b.h)||a.j.localeCompare(b.j));
+  
+  data.forEach((d,idx)=>{
+    // Membuat ID sementara jika belum ada dari inputan lama
+    if(!d.id) d.id = Date.now() + Math.random();
     
-    let opsiTgl = { day: '2-digit', month: 'long', year: 'numeric' };
-    let teksWaktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    document.getElementById("tgl").innerText = `${namaHari[angkaHariIni]}, ${now.toLocaleDateString('id-ID', opsiTgl)} | ${teksWaktu}`;
-    
-    let data = JSON.parse(localStorage.jadwal || "[]");
-    let html = "";
-    let jadwalHariIni = data.filter(d => parseInt(d.h) === angkaHariIni);
-    
-    jadwalHariIni.forEach(d => {
-        let [ja, me] = d.j.split(":");
-        let waktuTarget = new Date();
-        waktuTarget.setHours(parseInt(ja), parseInt(me), 0, 0);
-        
-        let waktuMulaiTampil = new Date(waktuTarget.getTime() - 7 * 60000);
-        let waktuSelesai = new Date(waktuTarget.getTime() + 15 * 60000);
-        
-        if (now >= waktuMulaiTampil && now < waktuSelesai) {
-            let cls = (now >= waktuMulaiTampil && now < waktuTarget) ? "soon" : "";
-            html += `
-                <div class="box ${cls}">
-                    <h2>${d.k}</h2>
-                    <h3>Pukul ${d.j} WIB</h3>
-                    <p>Imam: ${d.i}</p>
-                    <p>Badal: ${d.b1} / ${d.b2}</p>
-                </div>
-            `;
-        }
-    });
-    
-    document.getElementById("isi-tv").innerHTML = html || "<div class='kosong'>TULUSKAN NIAT, TEGAKKAN SHOLAT</div>";
+    html+=`<div class="item">
+            <b>${d.h} - ${d.j}</b><br>${d.k}<br>
+            Imam: ${d.i || '-'}<br>
+            B1: ${d.b1 || '-'} | B2: ${d.b2 || '-'}<br>
+            <div class="item-buttons">
+              <button class="edit" onclick="picuEdit('${d.id}')">EDIT</button>
+              <button class="del" onclick="hapusKonfirm('${d.id}')">HAPUS</button>
+            </div>
+          </div>`;
+  });
+  document.getElementById("list").innerHTML=html;
 }
 
-// Jalankan otomatis setiap detik
-setInterval(jalanTV, 1000);
-jalanTV();
-</script>
-</body>
-</html>
+function picuEdit(idStr){
+  let target = data.find(d => d.id == idStr);
+  if(!target) return;
+  
+  editId = idStr;
+  document.getElementById("h").value = target.h;
+  document.getElementById("j").value = target.j;
+  document.getElementById("k").value = target.k;
+  document.getElementById("i").value = target.i;
+  document.getElementById("b1").value = target.b1;
+  document.getElementById("b2").value = target.b2;
+  document.getElementById("btnSimpan").innerText = "💾 PERBARUI JADWAL";
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function batalEdit(){
+  editId = null;
+  document.getElementById("btnSimpan").innerText = "+ TAMBAH JADWAL";
+  j.value="";k.value="";i.value="";b1.value="";b2.value="";
+}
+
+function simpan(){
+  if(!j.value||!k.value){alert("Jam dan Kegiatan wajib diisi!");return}
+  
+  if(editId){
+    let idx = data.findIndex(d => d.id == editId);
+    if(idx > -1){
+      data[idx] = {id: editId, h:h.value, j:j.value, k:k.value, i:i.value, b1:b1.value, b2:b2.value};
+      alert("Jadwal diperbarui!");
+    }
+  } else {
+    data.push({id: Date.now() + Math.random(), h:h.value, j:j.value, k:k.value, i:i.value, b1:b1.value, b2:b2.value});
+    alert("Tersimpan!");
+  }
+  
+  localStorage.jadwal=JSON.stringify(data);
+  batalEdit();
+  tampil();
+}
+
+function hapusKonfirm(idStr){
+  if(confirm("Hapus jadwal ini?")){
+    if(editId === idStr) batalEdit();
+    data = data.filter(d => d.id != idStr);
+    localStorage.jadwal=JSON.stringify(data);
+    tampil();
+  }
+}
+
+// Menjaga kompatibilitas dengan tombol bawaan fungsi lama jika dipanggil dari luar
+function hapus(index){
+  data.splice(index,1);
+  localStorage.jadwal=JSON.stringify(data);
+  tampil();
+}
+function clearAll(){
+  if(confirm("Hapus semua jadwal?")){
+    data=[];
+    localStorage.jadwal=JSON.stringify(data);
+    batalEdit();
+    tampil();
+  }
+}
+
+jalan(); setInterval(jalan,1000);
+</script></body></html>
