@@ -1,4 +1,4 @@
-const CACHE_NAME = 'simulasi-imam-cache-v1';
+const CACHE_NAME = 'jadwal-imam1-cache-v1';
 const assets = [
   '/',
   'index.html',
