@@ -1,6 +1,6 @@
 {
-  "name": "Simulasi Imam",
-  "short_name": "SimulasiImam",
+  "name": "Jadwal Imam1",
+  "short_name": "JadwalImam1",
   "description": "Aplikasi Simulasi Imam untuk latihan dan pembelajaran.",
   "start_url": "/index.html",
   "display": "standalone",
